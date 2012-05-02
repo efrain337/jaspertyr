@@ -25,14 +25,14 @@
     
     <managed-bean>
   		<managed-bean-name>helloWorld</managed-bean-name>
-  		<managed-bean-class>org.assembly.tyr.HelloWorldController</managed-bean-class>
+  		<managed-bean-class>org.assembly.tyr.reports.ui.HelloWorldController</managed-bean-class>
   		<managed-bean-scope>request</managed-bean-scope>
  	</managed-bean>
  	
  	<managed-bean>
 		<managed-bean-name>reportGenerator</managed-bean-name>
-		<managed-bean-class>org.assembly.tyr.reports.ReportGeneratorController</managed-bean-class>
-		<managed-bean-scope>request</managed-bean-scope>
+		<managed-bean-class>org.assembly.tyr.reports.ui.ReportGeneratorController</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
  	
 	

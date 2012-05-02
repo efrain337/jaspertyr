@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.assembly.tyr;
+package org.assembly.tyr.reports.ui;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
