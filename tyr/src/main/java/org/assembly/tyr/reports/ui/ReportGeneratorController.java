@@ -18,9 +18,19 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperRunManager;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
+import org.assembly.tyr.reports.dao.ExampleDao;
 import org.assembly.tyr.reports.dao.ReportDao;
+import org.assembly.tyr.reports.model.Example;
 import org.assembly.tyr.reports.model.Parameter;
 import org.assembly.tyr.reports.model.Report;
 
@@ -30,6 +40,8 @@ public class ReportGeneratorController {
 	private Long reportId;
 	private List<Parameter> parameters;
 	private Map<String, Object> parameterValues = new HashMap<String, Object>();
+	
+	private ExampleDao exampleDao = new ExampleDao();
 	
 	public List<SelectItem> getReportList() {
 		List<SelectItem> result = new ArrayList<SelectItem>();
@@ -73,6 +85,10 @@ public class ReportGeneratorController {
 		return this.parameterValues.get(key);
 	}
 
+	public Collection<Example> getExample() {
+		return this.exampleDao.getAll();
+	}
+	
 	public String generateReportSubmit()
 			throws ClassNotFoundException, SQLException, IOException,
 			JRException {
@@ -117,5 +133,36 @@ public class ReportGeneratorController {
 	public void setParam(ActionEvent event) {
 		event.getComponent().getId();
 
+	}
+	
+	public void generateReportWithList(ActionEvent event) throws IOException {
+		//Buscamos el contexto de jsf
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		HttpServletResponse response = (HttpServletResponse) facesContext
+				.getExternalContext().getResponse();
+		
+		ServletOutputStream servletOutputStream = response.getOutputStream();		
+		
+		// Definimos cual sera nuestra fuente de datos  
+        JRBeanCollectionDataSource ds =new JRBeanCollectionDataSource(this.getExample());  
+        try {
+        	// Recuperamos el fichero fuente 
+        	InputStream reportStream = facesContext.getExternalContext()
+    				.getResourceAsStream("/resources/reports/reportWithList.jrxml");
+        	JasperDesign jd=JRXmlLoader.load(reportStream);  
+        	// Compilamos el informe jrxml  
+        	JasperReport report = JasperCompileManager.compileReport(jd);  
+        	// Rellenamos el informe con la conexion creada y sus parametros establecidos  
+			JasperPrint print = JasperFillManager.fillReport(report,new HashMap(), ds);
+			
+			JasperExportManager.exportReportToPdfStream(print, servletOutputStream); 
+			
+			servletOutputStream.flush();
+			servletOutputStream.close();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+		
 	}
 }

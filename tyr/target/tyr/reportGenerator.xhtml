@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+    <title>Report</title>
+</h:head>
+<h:body>
+    <h:outputStylesheet name="style.css" library="css"/>
+    <div id="container">
+        <h1>Report</h1>
+        <h:form>
+	        <h:selectOneMenu id="selectReport" 
+	 			value="#{reportGenerator.reportId}" onchange="submit()" >
+	  			<f:selectItems label="nombre"
+	   				value="#{reportGenerator.reportList}" />
+			</h:selectOneMenu> 
+			
+			<h:dataTable value="#{reportGenerator.parameters}" var="parameter">
+			     <h:column>  
+        			<h:outputText value="#{parameter.nombre}"/>  
+    			</h:column>  
+			    <h:column>
+			        <h:inputText  name="#{parameter.nombre}" value="#{parameter.value}" rendered="#{parameter.type == 'STRING'}"  >
+			        </h:inputText>
+			        <h:inputText  name="#{parameter.nombre}" value="#{parameter.value}" rendered="#{parameter.type == 'NUMBER'}"  >
+			        	<f:validateLongRange maximum="1000" minimum="0"/>
+			        </h:inputText>
+			        <h:inputText  name="#{parameter.nombre}" value="#{parameter.value}" rendered="#{parameter.type == 'DATE'}"  >
+			        	 <f:convertDateTime pattern="dd-MM-yyyy" />
+			        </h:inputText>
+			    </h:column>
+			</h:dataTable>
+	
+			<h:commandButton value="Press me"  action="#{reportGenerator.generateReportSubmit}" />
+        </h:form>
+    </div>
+</h:body>
+</html>

@@ -44,7 +44,12 @@
 			</h:commandLink>
 		</h:form>
 		<h:link value="Show Reports" outcome="reportGenerator"/>
-
+		<h:form>
+			<h:commandLink action="generate_report"
+				actionListener="#{reportGenerator.generateReportWithList}">
+				<h:outputText value="Show Reports with List" />
+			</h:commandLink>
+		</h:form>
 	</div>
 </h:body>
 </html>
